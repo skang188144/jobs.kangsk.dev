@@ -1,0 +1,7 @@
+.filterButton {
+    border: 1px solid #e9ecef;
+}
+
+.filterButton:not([data-opened="true"]):hover {
+    background-color: var(--mantine-color-default-hover);
+}

@@ -29,17 +29,30 @@ app.prepare().then(() => {
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
 
+    server.use((req: Request, res: Response, next: NextFunction) => {
+        const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+        res.locals.nonce = nonce;
+        next();
+    });
+
     const helmetConfig = {
-        contentSecurityPolicy: {
+        contentSecurityPolicy: dev ? false : {
             directives: {
                 defaultSrc: ["'self'"],
-                scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+                scriptSrc: [
+                    "'self'", 
+                    (req: any, res: any) => `'nonce-${res.locals.nonce}'`,
+                    "'unsafe-eval'"
+                ],
                 styleSrc: ["'self'", "'unsafe-inline'"],
                 imgSrc: ["'self'", "data:", "blob:"],
-                connectSrc: ["'self'", "ws:"], // Allow WebSocket for hot reload
-                fontSrc: ["'self'"],
+                connectSrc: ["'self'"],
+                fontSrc: ["'self'", "data:"],
             },
         },
+        crossOriginEmbedderPolicy: !dev,
+        crossOriginOpenerPolicy: !dev,
+        crossOriginResourcePolicy: !dev,
     };
 
     server.use(helmet(helmetConfig));

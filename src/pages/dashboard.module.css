@@ -1,8 +1,83 @@
-.shell {
-    height: 100vh;
+.card {
+    background-color: var(--mantine-color-body);
+    border-radius: 1rem;
 }
 
-.main {
-    background-color: var(--mantine-color-gray-0);
-    padding: var(--mantine-spacing-md);
+.label {
+    font-weight: 700;
+    line-height: 1;
+}
+
+.lead {
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.inner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+
+    @media (max-width: var(--mantine-breakpoint-xs)) {
+        flex-direction: column;
+    }
+}
+
+.ring {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    @media (max-width: var(--mantine-breakpoint-xs)) {
+        justify-content: center;
+        margin-top: var(--mantine-spacing-md);
+    }
+}
+
+.welcomeContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: var(--mantine-spacing-md) var(--mantine-spacing-xl);
+}
+
+.welcomeText {
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--mantine-color-dimmed);
+    margin-bottom: -0.5rem;
+}
+
+.nameText {
+    font-family: Greycliff CF, var(--mantine-font-family);
+    font-size: 4.5rem;
+    font-weight: 900;
+    line-height: 1.2;
+    background: linear-gradient(45deg, var(--mantine-color-blue-filled), var(--mantine-color-cyan-filled));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.listCard {
+    padding: var(--mantine-spacing-sm);
+    height: 100%;
+}
+
+.listCard .label {
+    font-size: 1rem;
+}
+
+.overviewCard {
+    height: 350px;
+}
+
+.rightColumn {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: var(--mantine-spacing-md);
 }

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import classes from './Navbar.module.css';
 import packageInfo from '../../package.json';
 import { useUser } from '@/hooks/useUser';
+import Link from 'next/link';
 
 interface NavItem {
     label: string;
@@ -37,7 +38,7 @@ const navigationItems: NavItem[] = [
         ],
     },
     {
-        label: 'Cover Letters',
+        label: 'Resume and Cover Letters',
         icon: FiFileText,
         links: [
             { label: 'My Resume', link: '/my-resume' },
@@ -51,21 +52,27 @@ const navigationItems: NavItem[] = [
 function NavItem({ icon: Icon, label, initiallyOpened, links }: NavItemProps) {
     const [opened, setOpened] = useState(initiallyOpened || false);
     const hasLinks = Array.isArray(links);
-
     const ChevronIcon = FiChevronRight;
+    const basePath = '/' + label.toLowerCase().replace(/\s+/g, '-');
+
+    const handleClick = () => {
+        if (hasLinks) {
+            setOpened(!opened);
+        }
+    };
 
     return (
         <>
-            <UnstyledButton
-                onClick={() => setOpened((o) => !o)}
-                className={classes.control}
-            >
-                <Group justify="space-between" gap={0}>
-                    <Group gap="md">
-                        <Icon size={18} />
-                        <span>{label}</span>
-                    </Group>
-                    {hasLinks && (
+            {hasLinks ? (
+                <UnstyledButton
+                    onClick={handleClick}
+                    className={classes.control}
+                >
+                    <Group justify="space-between" gap={0}>
+                        <Group gap="md">
+                            <Icon size={18} />
+                            <Text size="sm">{label}</Text>
+                        </Group>
                         <ChevronIcon
                             className={classes.chevron}
                             size={14}
@@ -74,22 +81,30 @@ function NavItem({ icon: Icon, label, initiallyOpened, links }: NavItemProps) {
                                 transition: 'transform 200ms ease',
                             }}
                         />
-                    )}
-                </Group>
-            </UnstyledButton>
+                    </Group>
+                </UnstyledButton>
+            ) : (
+                <Link href={basePath} style={{ textDecoration: 'none' }}>
+                    <UnstyledButton className={classes.control}>
+                        <Group gap="md">
+                            <Icon size={18} />
+                            <Text size="sm">{label}</Text>
+                        </Group>
+                    </UnstyledButton>
+                </Link>
+            )}
             {hasLinks && (
                 <Collapse in={opened}>
                     <div className={classes.linksInner}>
                         {links.map((link) => (
-                            <Text<'a'>
-                                component="a"
-                                className={classes.link}
+                            <Link
                                 href={link.link}
                                 key={link.label}
-                                onClick={(event) => event.preventDefault()}
+                                className={classes.link}
+                                style={{ textDecoration: 'none' }}
                             >
-                                {link.label}
-                            </Text>
+                                <Text size="sm">{link.label}</Text>
+                            </Link>
                         ))}
                     </div>
                 </Collapse>
