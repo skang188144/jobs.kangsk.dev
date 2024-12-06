@@ -1,4 +1,6 @@
 const dotenv = require('dotenv');
+dotenv.config({ path: './.env.local' });
+
 const express = require('express');
 const next = require('next');
 const session = require('express-session');
@@ -8,18 +10,18 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const passport = require('./passport');
 const { createUser, findUserByEmail, findUserByUsername } = require('./db');
-import type { Request, Response, NextFunction } from 'express';
 
-dotenv.config({ path: './.env.local' });
+// Remove the type import and declare types inline
+/** @type {import('express').Request} req */
+/** @type {import('express').Response} res */
+/** @type {import('express').NextFunction} next */
+
 
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({
-    dev: dev
-});
+const app = next({ dev });
 const handle = app.getRequestHandler();
 
-// Use module.exports instead of export default
-module.exports = async function handler(req: Request, res: Response) {
+module.exports = async function handler(req, res) {
     await app.prepare();
     const server = express();
 
@@ -31,7 +33,7 @@ module.exports = async function handler(req: Request, res: Response) {
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
 
-    server.use((req: Request, res: Response, next: NextFunction) => {
+    server.use((req, res, next) => {
         const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
         res.locals.nonce = nonce;
         next();
@@ -43,7 +45,7 @@ module.exports = async function handler(req: Request, res: Response) {
                 defaultSrc: ["'self'"],
                 scriptSrc: [
                     "'self'", 
-                    (req: any, res: any) => `'nonce-${res.locals.nonce}'`,
+                    (req, res) => `'nonce-${res.locals.nonce}'`,
                     "'unsafe-eval'"
                 ],
                 styleSrc: ["'self'", "'unsafe-inline'"],
@@ -92,8 +94,8 @@ module.exports = async function handler(req: Request, res: Response) {
     server.use(passport.session());
 
     // API routes should be defined BEFORE the catch-all route
-    server.post('/api/auth/login', (req: Request, res: Response, next: NextFunction) => {
-        passport.authenticate('local', (err: any, user: Express.User, info: any) => {
+    server.post('/api/auth/login', (req, res, next) => {
+        passport.authenticate('local', (err, user, info) => {
             if (err) {
                 return next(err);
             } 
@@ -102,7 +104,7 @@ module.exports = async function handler(req: Request, res: Response) {
                 return res.status(401).json({ success: false, message: info.message });
             }
             
-            req.logIn(user, (err: any) => {
+            req.logIn(user, (err) => {
                 if (err) {
                     return next(err);
                 }
@@ -121,8 +123,8 @@ module.exports = async function handler(req: Request, res: Response) {
     });
 
     // Logout route
-    server.post('/api/auth/logout', (req: Request, res: Response, next: NextFunction) => {
-        req.logout((err: any) => {
+    server.post('/api/auth/logout', (req, res, next) => {
+        req.logout((err) => {
             if (err) {
                 return res.status(500).json({ success: false, message: 'Logout failed. Please contact support.' });
             }
@@ -131,7 +133,7 @@ module.exports = async function handler(req: Request, res: Response) {
     });
 
     // Register route
-    server.post('/api/auth/register', async (req: Request, res: Response, next: NextFunction) => {
+    server.post('/api/auth/register', async (req, res, next) => {
         try {
             const { email, username, password, firstName, lastName } = req.body;
     
@@ -245,7 +247,7 @@ module.exports = async function handler(req: Request, res: Response) {
     });
 
     // Get current user route
-    server.get('/api/auth/user', (req: Request, res: Response, next: NextFunction) => {
+    server.get('/api/auth/user', (req, res, next) => {
         console.log('Session:', req.session);
         console.log('User in request:', req.user);
         console.log('Is authenticated:', req.isAuthenticated());
@@ -267,7 +269,7 @@ module.exports = async function handler(req: Request, res: Response) {
     });
 
     // Handle all other routes using Next.js
-    server.all('*', (req: Request, res: Response, next: NextFunction) => {
+    server.all('*', (req, res, next) => {
         return handle(req, res);
     });
 
@@ -288,7 +290,7 @@ if (dev) {
         server.use(express.json());
         server.use(express.urlencoded({ extended: true }));
 
-        server.use((req: Request, res: Response, next: NextFunction) => {
+        server.use((req, res, next) => {
             const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
             res.locals.nonce = nonce;
             next();
@@ -300,7 +302,7 @@ if (dev) {
                     defaultSrc: ["'self'"],
                     scriptSrc: [
                         "'self'", 
-                        (req: any, res: any) => `'nonce-${res.locals.nonce}'`,
+                        (req, res) => `'nonce-${res.locals.nonce}'`,
                         "'unsafe-eval'"
                     ],
                     styleSrc: ["'self'", "'unsafe-inline'"],
@@ -349,8 +351,8 @@ if (dev) {
         server.use(passport.session());
 
         // API routes should be defined BEFORE the catch-all route
-        server.post('/api/auth/login', (req: Request, res: Response, next: NextFunction) => {
-            passport.authenticate('local', (err: any, user: Express.User, info: any) => {
+        server.post('/api/auth/login', (req, res, next) => {
+            passport.authenticate('local', (err, user, info) => {
                 if (err) {
                     return next(err);
                 } 
@@ -359,7 +361,7 @@ if (dev) {
                     return res.status(401).json({ success: false, message: info.message });
                 }
                 
-                req.logIn(user, (err: any) => {
+                req.logIn(user, (err) => {
                     if (err) {
                         return next(err);
                     }
@@ -378,8 +380,8 @@ if (dev) {
         });
 
         // Logout route
-        server.post('/api/auth/logout', (req: Request, res: Response, next: NextFunction) => {
-            req.logout((err: any) => {
+        server.post('/api/auth/logout', (req, res, next) => {
+            req.logout((err) => {
                 if (err) {
                     return res.status(500).json({ success: false, message: 'Logout failed. Please contact support.' });
                 }
@@ -388,7 +390,7 @@ if (dev) {
         });
 
         // Register route
-        server.post('/api/auth/register', async (req: Request, res: Response, next: NextFunction) => {
+        server.post('/api/auth/register', async (req, res, next) => {
             try {
                 const { email, username, password, firstName, lastName } = req.body;
         
@@ -502,7 +504,7 @@ if (dev) {
         });
 
         // Get current user route
-        server.get('/api/auth/user', (req: Request, res: Response, next: NextFunction) => {
+        server.get('/api/auth/user', (req, res, next) => {
             console.log('Session:', req.session);
             console.log('User in request:', req.user);
             console.log('Is authenticated:', req.isAuthenticated());
@@ -524,7 +526,7 @@ if (dev) {
         });
 
         // Handle all other routes using Next.js
-        server.all('*', (req: Request, res: Response, next: NextFunction) => {
+        server.all('*', (req, res, next) => {
             return handle(req, res);
         });
 
