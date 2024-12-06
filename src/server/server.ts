@@ -18,8 +18,8 @@ const app = next({
 });
 const handle = app.getRequestHandler();
 
-// Export the handler for Vercel
-export default async function handler(req: Request, res: Response) {
+// Use module.exports instead of export default
+module.exports = async function handler(req: Request, res: Response) {
     await app.prepare();
     const server = express();
 
@@ -59,7 +59,7 @@ export default async function handler(req: Request, res: Response) {
 
     server.use(helmet(helmetConfig));
     server.use(cors({
-        origin: process.env.CLIENT_URL,
+        origin: dev ? 'http://localhost:3000' : process.env.CLIENT_URL,
         credentials: true
     }));
 
@@ -76,11 +76,12 @@ export default async function handler(req: Request, res: Response) {
             },
             autoRemove: 'native',
             dbName: 'auth',
-            collectionName: 'sessions'
+            collectionName: 'sessions',
+            touchAfter: 24 * 3600 // Only update sessions once per 24 hours
         }),
         cookie: {
             httpOnly: true,
-            secure: !dev,
+            secure: !dev, // This will be true in production
             maxAge: 1000 * 60 * 60 * 24 * 14,
             sameSite: 'lax'
         }
@@ -315,7 +316,7 @@ if (dev) {
 
         server.use(helmet(helmetConfig));
         server.use(cors({
-            origin: process.env.CLIENT_URL,
+            origin: dev ? 'http://localhost:3000' : process.env.CLIENT_URL,
             credentials: true
         }));
 
@@ -332,11 +333,12 @@ if (dev) {
                 },
                 autoRemove: 'native',
                 dbName: 'auth',
-                collectionName: 'sessions'
+                collectionName: 'sessions',
+                touchAfter: 24 * 3600 // Only update sessions once per 24 hours
             }),
             cookie: {
                 httpOnly: true,
-                secure: !dev,
+                secure: !dev, // This will be true in production
                 maxAge: 1000 * 60 * 60 * 24 * 14,
                 sameSite: 'lax'
             }
