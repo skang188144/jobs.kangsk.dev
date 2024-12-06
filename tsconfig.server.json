@@ -4,7 +4,9 @@
     "module": "commonjs",
     "outDir": "dist",
     "noEmit": false,
-    "jsx": "react"
+    "jsx": "react",
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   },
   "include": ["src/server/**/*.ts"]
 } 
