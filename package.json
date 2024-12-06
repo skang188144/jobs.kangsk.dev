@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "build": "next build && tsc --project tsconfig.server.json",
+    "start": "NODE_ENV=production node dist/server/server.js",
+    "vercel-build": "next build"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
