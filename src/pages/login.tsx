@@ -11,7 +11,7 @@ import {
     Center,
 } from '@mantine/core';
 import classes from './login.module.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { withAuthRedirect } from '@/components/withAuthRedirect';
 

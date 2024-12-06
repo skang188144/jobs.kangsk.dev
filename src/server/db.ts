@@ -65,11 +65,23 @@ export async function findUserById(_id: ObjectId) {
     }
 }
 
-export async function createUser(email: string, username: string, password: string) {
+export async function createUser(
+    email: string, 
+    username: string, 
+    password: string,
+    firstName: string, 
+    lastName: string, 
+) {
     try {
         const client = await getClient();
         const database = client.db('auth');
-        return await database.collection('accounts').insertOne({ email, username, password });
+        return await database.collection('accounts').insertOne({ 
+            email, 
+            username, 
+            password,
+            firstName, 
+            lastName 
+        });
     } catch (error) {
         console.error('Error creating user:', error);
         return null;

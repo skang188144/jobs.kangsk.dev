@@ -9,7 +9,7 @@ import {
     Title,
 } from '@mantine/core';
 import classes from './login.module.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { withAuthRedirect } from '@/components/withAuthRedirect';
 
@@ -17,6 +17,8 @@ const Register = ({ authError }: { authError?: string }) => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [errorMsg, setErrorMsg] = useState(authError || '');
     const router = useRouter();
 
@@ -28,7 +30,13 @@ const Register = ({ authError }: { authError?: string }) => {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, username, password })
+                body: JSON.stringify({ 
+                    email, 
+                    username, 
+                    password,
+                    firstName,
+                    lastName
+                })
             });
 
             if (res.status === 201) {
@@ -59,9 +67,25 @@ const Register = ({ authError }: { authError?: string }) => {
                     </Text>
                 )}
                 <TextInput 
+                    label="First Name" 
+                    placeholder="First Name" 
+                    required 
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                />
+                <TextInput 
+                    label="Last Name" 
+                    placeholder="Last Name" 
+                    required 
+                    mt="md"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                />
+                <TextInput 
                     label="Email" 
                     placeholder="Email" 
                     required 
+                    mt="md"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />

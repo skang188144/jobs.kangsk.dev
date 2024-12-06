@@ -11,7 +11,6 @@ import helmet from 'helmet';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import { createUser, findUserByEmail, findUserByUsername } from './db';
-import UserWithoutPassword from '@/types/UserWithoutPassword';
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({
@@ -45,7 +44,7 @@ app.prepare().then(() => {
 
     server.use(helmet(helmetConfig));
     server.use(cors({
-        origin: process.env.CLIENT_URL || 'http://localhost:3000',
+        origin: process.env.CLIENT_URL,
         credentials: true
     }));
 
@@ -118,13 +117,23 @@ app.prepare().then(() => {
     // Register route
     server.post('/api/auth/register', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { email, username, password } = req.body;
+            const { email, username, password, firstName, lastName } = req.body;
     
             // Validate input
-            if (!email || !username || !password) {
+            if (!email || !username || !password || !firstName || !lastName) {
                 res.status(400).json({ 
                     success: false, 
                     message: 'Missing required fields. Please try again.' 
+                });
+                
+                return;
+            }
+
+            // Validate names
+            if (firstName.length < 1 || lastName.length < 1) {
+                res.status(400).json({ 
+                    success: false, 
+                    message: 'First and last names are required. Please try again.' 
                 });
                 
                 return;
@@ -187,7 +196,7 @@ app.prepare().then(() => {
             const hashedPassword = await bcrypt.hash(password, 10);
     
             // Create new user
-            const result = await createUser(email, username, hashedPassword);
+            const result = await createUser(email, username, hashedPassword, firstName, lastName);
     
             if (!result) {
                 res.status(500).json({ 
@@ -202,7 +211,9 @@ app.prepare().then(() => {
             const userResponse = {
                 _id: result.insertedId,
                 email,
-                username
+                username,
+                firstName,
+                lastName
             };
     
             res.status(201).json({ 

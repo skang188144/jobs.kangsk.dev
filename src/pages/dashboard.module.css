@@ -1,0 +1,8 @@
+.shell {
+    height: 100vh;
+}
+
+.main {
+    background-color: var(--mantine-color-gray-0);
+    padding: var(--mantine-spacing-md);
+}
