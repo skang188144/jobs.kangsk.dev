@@ -1,16 +1,16 @@
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
+const express = require('express');
+const next = require('next');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const helmet = require('helmet');
+const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const passport = require('./passport');
+const { createUser, findUserByEmail, findUserByUsername } = require('./db');
+import type { Request, Response, NextFunction } from 'express';
 
 dotenv.config({ path: './.env.local' });
-
-import express, { NextFunction, Request, Response } from 'express';
-import next from 'next';
-import session from 'express-session';
-import passport from './passport';
-import MongoStore from 'connect-mongo';
-import helmet from 'helmet';
-import cors from 'cors';
-import bcrypt from 'bcryptjs';
-import { createUser, findUserByEmail, findUserByUsername } from './db';
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({
@@ -266,7 +266,7 @@ export default async function handler(req: Request, res: Response) {
     });
 
     // Handle all other routes using Next.js
-    server.all('*', (req: Request, res: Response, next) => {
+    server.all('*', (req: Request, res: Response, next: NextFunction) => {
         return handle(req, res);
     });
 
@@ -522,7 +522,7 @@ if (dev) {
         });
 
         // Handle all other routes using Next.js
-        server.all('*', (req: Request, res: Response, next) => {
+        server.all('*', (req: Request, res: Response, next: NextFunction) => {
             return handle(req, res);
         });
 
