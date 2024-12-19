@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && tsc --project tsconfig.server.json",
-    "start": "NODE_ENV=production node dist/server/server.js",
-    "vercel-build": "next build"
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^3.7.4",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@langchain/community": "^0.3.6",
@@ -40,25 +40,22 @@
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "embla-carousel-react": "^7.1.0",
-    "express": "^4.21.1",
-    "express-session": "^1.18.1",
     "helmet": "^8.0.0",
     "linkedin-jobs-api": "^1.0.6",
     "mongodb": "^6.11.0",
     "next": "14.2.15",
-    "next-connect": "^1.0.0",
-    "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
+    "next-auth": "^4.24.11",
+    "nodemailer": "^6.9.16",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.4.0",
-    "recharts": "^2.14.1",
-    "styled-jsx": "^5.1.6"
+    "recharts": "^2.14.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express-session": "^1.18.1",
+    "@types/next-auth": "^3.13.0",
     "@types/node": "^20",
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",

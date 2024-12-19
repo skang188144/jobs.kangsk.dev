@@ -4,8 +4,9 @@ import { FiHome, FiFileText, FiBriefcase, FiSettings, FiChevronRight, FiUser } f
 import { useState } from 'react';
 import classes from './Navbar.module.css';
 import packageInfo from '../../package.json';
-import { useUser } from '@/hooks/useUser';
+// import { useUser } from '@/hooks/useUser';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 interface NavItem {
     label: string;
@@ -49,7 +50,7 @@ const navigationItems: NavItem[] = [
     { label: 'Settings', icon: FiSettings },
 ];
 
-function NavItem({ icon: Icon, label, initiallyOpened, links }: NavItemProps) {
+const NavItem = ({ icon: Icon, label, initiallyOpened, links }: NavItemProps) => {
     const [opened, setOpened] = useState(initiallyOpened || false);
     const hasLinks = Array.isArray(links);
     const ChevronIcon = FiChevronRight;
@@ -113,10 +114,10 @@ function NavItem({ icon: Icon, label, initiallyOpened, links }: NavItemProps) {
     );
 }
 
-function UserButton() {
-    const { user, loading } = useUser();
+const UserButton = () => {
+    const { data: session, status } = useSession();
 
-    if (loading) {
+    if (status === "loading") {
         return (
             <UnstyledButton className={classes.user}>
                 <Group>
@@ -137,10 +138,10 @@ function UserButton() {
                 <FiUser size={20} />
                 <div style={{ flex: 1 }}>
                     <Text size="sm" fw={500}>
-                        {user ? user.username : 'Not logged in'}
+                        {session?.user?.firstName || 'Not logged in'}
                     </Text>
                     <Text c="dimmed" size="xs">
-                        {user ? user.email : 'Please sign in'}
+                        {session?.user?.email || 'Please sign in'}
                     </Text>
                 </div>
             </Group>

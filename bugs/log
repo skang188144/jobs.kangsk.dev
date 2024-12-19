@@ -1,0 +1,32 @@
+[next-auth][error][adapter_error_getUserByEmail] 
+https://next-auth.js.org/errors#adapter_error_getuserbyemail 40F875FD01000000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:ssl/record/rec_layer_s3.c:907:SSL alert number 80
+ {
+  message: '40F875FD01000000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:ssl/record/rec_layer_s3.c:907:SSL alert number 80\n',
+  stack: 'MongoServerSelectionError: 40F875FD01000000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:ssl/record/rec_layer_s3.c:907:SSL alert number 80\n' +
+    '\n' +
+    '    at Topology.selectServer (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/sdam/topology.js:320:38)\n' +
+    '    at async Topology._connect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/sdam/topology.js:204:28)\n' +
+    '    at async Topology.connect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/sdam/topology.js:156:13)\n' +
+    '    at async topologyConnect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/mongo_client.js:233:17)\n' +
+    '    at async MongoClient._connect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/mongo_client.js:246:13)\n' +
+    '    at async MongoClient.connect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/mongo_client.js:171:13)\n' +
+    '    at async getDb (file:///Users/kangsk/Documents/jobs.kangsk.dev/node_modules/@auth/mongodb-adapter/index.js:135:25)\n' +
+    '    at async getUserByEmail (file:///Users/kangsk/Documents/jobs.kangsk.dev/node_modules/@auth/mongodb-adapter/index.js:191:59)',
+  name: 'MongoServerSelectionError'
+}
+ ⨯ MongoServerSelectionError: 40F875FD01000000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:ssl/record/rec_layer_s3.c:907:SSL alert number 80
+
+    at Topology.selectServer (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/sdam/topology.js:320:38)
+    at async Topology._connect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/sdam/topology.js:204:28)
+    at async Topology.connect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/sdam/topology.js:156:13)
+    at async topologyConnect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/mongo_client.js:233:17)
+    at async MongoClient._connect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/mongo_client.js:246:13)
+    at async MongoClient.connect (/Users/kangsk/Documents/jobs.kangsk.dev/node_modules/mongodb/lib/mongo_client.js:171:13)
+    at async getDb (file:///Users/kangsk/Documents/jobs.kangsk.dev/node_modules/@auth/mongodb-adapter/index.js:135:25)
+    at async getUserByEmail (file:///Users/kangsk/Documents/jobs.kangsk.dev/node_modules/@auth/mongodb-adapter/index.js:191:59) {
+  name: 'GetUserByEmailError',
+  code: undefined,
+  page: '/api/auth/[...nextauth]'
+}
+ ✓ Compiled /_error in 97ms (1261 modules)
+ POST /api/auth/signin/email 500 in 22683ms

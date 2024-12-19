@@ -3,90 +3,100 @@ import {
     Button,
     Container,
     Paper,
-    PasswordInput,
     Text,
     TextInput,
     Title,
     Loader,
-    Center,
+    Group,
+    Divider,
 } from '@mantine/core';
 import classes from './login.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { withAuthRedirect } from '@/components/withAuthRedirect';
+import { signIn } from 'next-auth/react';
+import { GoogleLoginButton } from '@/components/GoogleLoginButton';
+import { LinkedInLoginButton } from '@/components/LinkedInLoginButton';
+import { useForm } from '@mantine/form';
+import Head from 'next/head';
 
 const Login = ({ authError }: { authError?: string }) => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState(authError || '');
     const router = useRouter();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const form = useForm({
+        initialValues: {
+            email: '',
+        },
+        validate: {
+            email: (val) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) ? null : 'Invalid email'),
+        },
+    });
+
+    const handleSubmit = (values: { email: string }) => {
         setErrorMsg('');
-        
-        try {
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
+        setIsLoading(true);
 
-            if (res.ok) {
-                router.push('/dashboard');
-            } else {
-                const data = await res.json();
-                setErrorMsg(data.message);
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            setErrorMsg('An error occurred. Please try again later.');
-        }
-    };
+        localStorage.setItem('pendingVerification', values.email);
 
-    const handleRouteToRegister = () => {
-        router.push('/register');
+        signIn('email', {
+            email: values.email,
+            callbackUrl: '/dashboard',
+        });
     };
 
     return (
-        <Container size={420} my={40}>
-            <Title ta="center" className={classes.title}>
-                jobs.kangsk.dev
-            </Title>
-            <Text c="dimmed" size="sm" ta="center" mt={5}>
-                Do not have an account yet?{' '}
-                <Anchor size="sm" component="button" onClick={handleRouteToRegister}>
-                    Create account
-                </Anchor>
-            </Text>
+        <>
+            <Head>
+                <title>Sign In | jobs.kangsk.dev</title>
+            </Head>
+            <Container size={420} my={40}>
+                <Title ta="center" className={classes.title}>
+                    jobs.kangsk.dev
+                </Title>
+                <Text c="dimmed" size="sm" ta="center" mt={5}>
+                    Welcome! Please enter your email to continue
+                </Text>
 
-            <Paper withBorder shadow="md" p={30} mt={30} radius="md" component="form" onSubmit={handleSubmit}>
-                {errorMsg && (
-                    <Text c="red" size="sm" mb="md">
-                        {errorMsg}
-                    </Text>
-                )}
-                <TextInput 
-                    label="Username" 
-                    placeholder="Username" 
-                    required 
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <PasswordInput 
-                    label="Password" 
-                    placeholder="Password" 
-                    required 
-                    mt="md" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button type="submit" fullWidth mt="xl">
-                    Sign in
-                </Button>
-            </Paper>
-        </Container>
+                <Paper withBorder shadow="md" p={30} mt={30} radius="md" component="form" onSubmit={form.onSubmit(handleSubmit)}>
+                    {errorMsg && (
+                        <Text c="red" size="sm" mb="md">
+                            {errorMsg}
+                        </Text>
+                    )}
+
+                    <Group grow mb="md" mt="md">
+                        <GoogleLoginButton radius="xl">Google</GoogleLoginButton>
+                        <LinkedInLoginButton radius="xl">LinkedIn</LinkedInLoginButton>
+                    </Group>
+
+                    <Divider label="Or continue with email" labelPosition="center" my="lg" />
+
+                    <TextInput 
+                        label="Email" 
+                        placeholder="your@email.com" 
+                        required 
+                        value={form.values.email}
+                        onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+                        error={form.errors.email && 'Invalid email'}
+                    />
+                    
+                    <Group justify="space-between" mt="xl">
+                        <Anchor component="button" type="button" c="dimmed" onClick={() => router.push('/')} size="xs">
+                            Back to home page
+                        </Anchor>
+                        <Button 
+                            type="submit"
+                            radius="xl"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? <Loader size="sm" /> : 'Sign in'}
+                        </Button>
+                    </Group>
+                </Paper>
+            </Container>
+        </>
     );
 };
 
-export default withAuthRedirect(Login, '/dashboard');
+export default Login;

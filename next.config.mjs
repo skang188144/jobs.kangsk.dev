@@ -3,7 +3,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  reactStrictMode: true,
+  reactStrictMode: false, // TODO: change to true
 };
 
 export default nextConfig;

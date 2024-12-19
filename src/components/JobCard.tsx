@@ -8,10 +8,11 @@ interface JobCardProps {
         title: string;
         company: string;
         location: string;
-        salary: string;
+        salary: number;
         type: string;
-        posted: string;
+        posted: Date;
         logo: string;
+        remoteFilter: string;
     };
     onClick?: () => void;
 }
@@ -52,12 +53,18 @@ export function JobCard({ job, onClick }: JobCardProps) {
                         <Text c="dimmed" size="sm">{job.company}</Text>
                         <Text c="dimmed" size="sm">•</Text>
                         <Text c="dimmed" size="sm">{job.location}</Text>
+                        {job.remoteFilter && (
+                            <>
+                                <Text c="dimmed" size="sm">•</Text>
+                                <Badge variant="light" color="gray">{job.remoteFilter}</Badge>
+                            </>
+                        )}
                     </Group>
 
                     <Group justify="space-between" mt="md">
                         <Text fw={500} c="blue.6">{job.salary}</Text>
                         <Group gap="xs" align="center">
-                            <Text size="sm" c="dimmed">{job.posted}</Text>
+                            <Text size="sm" c="dimmed">{job.posted.toLocaleDateString()}</Text>
                             <FiChevronDown 
                                 size={18} 
                                 style={{ 
