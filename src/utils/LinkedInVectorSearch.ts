@@ -5,7 +5,7 @@ export const generateSearchPipeline = (queryVector: number[], filters: {
     dateSincePosted?: string;
     jobType?: string;
     remoteFilter?: string;
-    salary?: string;
+    salary?: number;
     experienceLevel?: string;
     limit: number;
 }) => {

@@ -2,18 +2,10 @@ import { Card, Group, Text, Badge, ActionIcon, Stack, Collapse, Button } from '@
 import { FiBookmark, FiChevronDown } from 'react-icons/fi';
 import { useState } from 'react';
 import classes from './JobCard.module.css';
+import { LinkedInJob } from '@/types/LinkedInJob';
 
 interface JobCardProps {
-    job: {
-        title: string;
-        company: string;
-        location: string;
-        salary: number;
-        type: string;
-        posted: Date;
-        logo: string;
-        remoteFilter: string;
-    };
+    job : LinkedInJob;
     onClick?: () => void;
 }
 
@@ -30,10 +22,10 @@ export function JobCard({ job, onClick }: JobCardProps) {
             onClick={() => setExpanded(!expanded)}
         >
             <Group align="flex-start" wrap="nowrap">
-                <img src={job.logo} alt={`${job.company} logo`} className={classes.companyLogo} />
+                <img src={job.companyLogo} alt={`${job.company} logo`} className={classes.companyLogo} />
                 <div style={{ flex: 1 }}>
                     <Group justify="space-between" mb="xs">
-                        <Text fw={600} size="lg" style={{ color: '#2C3E50' }}>{job.title}</Text>
+                        <Text fw={600} size="lg" style={{ color: '#2C3E50' }}>{job.position}</Text>
                         <Group gap="xs">
                             <ActionIcon 
                                 variant="subtle" 
@@ -45,7 +37,7 @@ export function JobCard({ job, onClick }: JobCardProps) {
                             >
                                 <FiBookmark size={18} />
                             </ActionIcon>
-                            <Badge variant="light" color="blue">{job.type}</Badge>
+                            <Badge variant="light" color="blue">{job.jobType}</Badge>
                         </Group>
                     </Group>
 
@@ -64,7 +56,7 @@ export function JobCard({ job, onClick }: JobCardProps) {
                     <Group justify="space-between" mt="md">
                         <Text fw={500} c="blue.6">{job.salary}</Text>
                         <Group gap="xs" align="center">
-                            <Text size="sm" c="dimmed">{job.posted.toLocaleDateString()}</Text>
+                            <Text size="sm" c="dimmed">{job.date.toLocaleDateString()}</Text>
                             <FiChevronDown 
                                 size={18} 
                                 style={{ 

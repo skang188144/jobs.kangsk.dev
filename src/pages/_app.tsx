@@ -26,7 +26,6 @@ export default function App({ Component, pageProps }: AppProps) {
                     <Auth pathname={router.pathname}>
                         <AppShell
                             navbar={shouldShowNavbar ? { width: 300, breakpoint: 'sm' } : undefined}
-                            padding="md"
                         >
                             {shouldShowNavbar && (
                                 <AppShell.Navbar>

@@ -5,11 +5,21 @@ import { useState } from 'react';
 import classes from './JobSearch.module.css';
 
 interface JobSearchProps extends TextInputProps {
-    jobType: string | null;
-    setJobType: (value: string | null) => void;
+    filters: {
+        jobType: string | null;
+        remotePreference: string;
+        location: string;
+        salary: string;
+        timeFrame: string;
+        experienceLevel: string | null;
+    };
+    setFilters: (filters: any) => void;
+    searchQuery: string;
+    setSearchQuery: (query: string) => void;
+    onSearch: () => void;
 }
 
-export function JobSearch({ jobType, setJobType, ...props }: JobSearchProps) {
+export function JobSearch({ filters, setFilters, searchQuery, setSearchQuery, onSearch, ...props }: JobSearchProps) {
     const theme = useMantineTheme();
     const [opened, setOpened] = useState(false);
 
@@ -18,22 +28,35 @@ export function JobSearch({ jobType, setJobType, ...props }: JobSearchProps) {
             <TextInput
                 radius="xl"
                 size="md"
-                placeholder="Search jobs..."
+                placeholder="Browse jobs..."
                 rightSectionWidth={42}
                 leftSection={<FiSearch size={18} />}
                 rightSection={
-                    <ActionIcon size={32} radius="xl" color={theme.primaryColor} variant="filled">
+                    <ActionIcon 
+                        size={32} 
+                        radius="xl" 
+                        color={theme.primaryColor} 
+                        variant="filled"
+                        onClick={onSearch}
+                    >
                         <FiArrowRight size={18} />
                     </ActionIcon>
                 }
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.currentTarget.value)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        onSearch();
+                    }
+                }}
                 style={{ flex: 1 }}
                 {...props}
             />
             <FilterButton 
                 opened={opened}
                 onChange={setOpened}
-                jobType={jobType}
-                setJobType={setJobType}
+                filters={filters}
+                setFilters={setFilters}
             />
         </div>
     );

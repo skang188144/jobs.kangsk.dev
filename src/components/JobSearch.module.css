@@ -7,3 +7,10 @@
     max-width: 600px;
     margin: 0 auto;
 } 
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    width: 100%;
+} 
